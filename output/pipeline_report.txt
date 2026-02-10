@@ -1,0 +1,29 @@
+
+  HEALTHCARE ENCOUNTER ANALYTICS — PIPELINE REPORT
+  Ministry of Health — Central Data Hub
+
+
+DATA OVERVIEW
+  Total aggregated rows (patient × facility × month): 150
+  Unique patients:    50
+  Unique facilities:  5
+  Reporting months:   ['2025-01', '2025-02', '2025-03']
+
+COST SUMMARY
+  Total cost (all records):     218,765.00
+  Mean cost per row:            1,458.43
+  Min cost:                     -380.00
+  Max cost:                     2,632.00
+
+DATA QUALITY RESULTS
+  Records passing all checks:   147
+  Records flagged:              3
+
+  FLAG BREAKDOWN:
+    - negative_cost: 3 record(s)
+
+OUTPUT FILES
+  analytics_summary.csv   — Full analytics output (150 rows)
+  cleaned_encounters.csv  — Quality-checked records (147 rows)
+  flagged_encounters.csv  — Flagged records (3 rows)
+

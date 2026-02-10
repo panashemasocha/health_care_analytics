@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: health_analytics_db
+    environment:
+      POSTGRES_DB: health_analytics
+      POSTGRES_USER: moh_analyst
+      POSTGRES_PASSWORD: moh_secure_2025
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql/01_create_table.sql:/docker-entrypoint-initdb.d/01_create_table.sql
+      - ./sql/02_load_data.sql:/docker-entrypoint-initdb.d/02_load_data.sql
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U moh_analyst -d health_analytics"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: health_analytics_app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: health_analytics
+      DB_USER: moh_analyst
+      DB_PASSWORD: moh_secure_2025
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./sql:/app/sql
+      - ./output:/app/output
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: health_analytics_test
+    entrypoint: ["python", "-m", "pytest", "tests/", "-v", "--tb=short"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: health_analytics
+      DB_USER: moh_analyst
+      DB_PASSWORD: moh_secure_2025
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+      - ./sql:/app/sql
+      - ./output:/app/output
+
+volumes:
+  pgdata:

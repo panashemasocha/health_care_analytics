@@ -1,0 +1,4 @@
+patient_id,facility_id,year_month,total_encounters,total_cost,distinct_diagnosis_count,flag_reason
+P001,F001,2025-01,6,-380.0,4,negative_cost
+P001,F001,2025-02,5,-290.0,3,negative_cost
+P001,F001,2025-03,6,-330.0,4,negative_cost
